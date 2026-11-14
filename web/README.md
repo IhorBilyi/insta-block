@@ -70,8 +70,8 @@ add the translated labels to `src/rules.json`.
 | `src/rules.json` | Labels and selectors, inlined at build time |
 | `src/settings-panel.js` | The in-page settings panel (web only; the app gets a native screen) |
 | `build.js` | Builds `dist/` |
-| `dist/` | Built files: `reels-blocker.user.js`, `blocker.js`, `blocker.css`, `rules.json`, `demo.html` |
-| `test/` | A mock Instagram and 41 end-to-end checks |
+| `dist/` | Built files: `reels-blocker.user.js`, `blocker.js`, `blocker.css`, `rules.json`, `demo.html` (and `demo-body.html`, the same demo without its outer page) |
+| `test/` | A mock Instagram and 42 end-to-end checks |
 
 ## Develop
 

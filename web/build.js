@@ -59,13 +59,14 @@ const injectCss = `(function () {
 
 const userscript = header + '\n' + injectCss + '\n' + blocker + '\n' + panel;
 
-// The demo keeps the mock's "path" in the URL hash, so it works from any host.
+// The demo keeps the mock's "path" in memory, so it works inside any host page.
 const demoEnv = `<script>
-window.__DEMO_HASH__ = true;
+window.__DEMO__ = true;
+window.__demoPath = '/';
 window.__REELS_BLOCKER_ENV__ = {
-  path: function () { return location.hash.indexOf('#/') === 0 ? location.hash.slice(1) : '/'; },
-  navigate: function (p) { history.replaceState(null, '', '#' + p); if (window.__mockRender) window.__mockRender(); },
-  reload: function () { location.reload(); }
+  path: function () { return window.__demoPath; },
+  navigate: function (p) { window.__demoPath = p; if (window.__mockRender) window.__mockRender(); },
+  reload: function () { window.__reelsBlocker.refresh(); }
 };
 </script>
 <script>
@@ -74,7 +75,7 @@ ${userscript.replace(/<\/script>/gi, '<\\/script>')}
 
 const demoBar = `<div class="demo-bar">
   <strong>Reels blocker demo.</strong> This is a pretend Instagram with the blocker running, so you can try it without logging in.
-  <form id="demo-go"><input id="demo-path" aria-label="Address" autocomplete="off" spellcheck="false"><button>Go</button></form>
+  <form id="demo-go"><button type="button" class="back" id="demo-back" aria-label="Back">&larr;</button><input id="demo-path" aria-label="Address" autocomplete="off" spellcheck="false"><button>Go</button></form>
   <ul>
     <li>Type <code>/reels/</code> above and press Go: you land back where you were.</li>
     <li>Open Messages, then anna's reel: it plays. Swipe to the next one: you're back in the chat.</li>
@@ -96,3 +97,11 @@ write('blocker.css', css);
 write('rules.json', JSON.stringify(rules, null, 2) + '\n');
 write('reels-blocker.user.js', userscript);
 write('demo.html', demo);
+
+// The same demo as a page body for hosts that supply their own <html>/<head>/<body>.
+const demoBody = demo
+  .replace(/^[\s\S]*?<head>\s*/, '')
+  .replace(/<\/head>\s*<body>/, '')
+  .replace(/<\/body>\s*<\/html>\s*$/, '')
+  .replace(/<meta charset="utf-8">\s*<meta name="viewport"[^>]*>\s*/, '<meta name="claude:viewport-fit-sides" content="cover">\n');
+write('demo-body.html', demoBody);

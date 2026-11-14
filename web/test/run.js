@@ -168,7 +168,7 @@ async function newContext(browser, hostConfig, body = mock) {
     await page.click('#nav-dm');
     await page.click('#dm-thread');
     await page.fill('#demo-path', '/reels/');
-    await page.click('#demo-go button');
+    await page.click('#demo-go button:not(.back)');
     await sleep(800);
     check('Demo: typing /reels/ bounces back', await page.locator('#dm-reel').isVisible(), 'not bounced: ' + page.url());
     await page.click('#dm-reel');
@@ -177,6 +177,14 @@ async function newContext(browser, hostConfig, body = mock) {
     await page.click('#next-reel');
     await sleep(800);
     check('Demo: next reel bounces to the chat', await page.locator('#dm-reel').isVisible(), page.url());
+    await page.click('#nav-home');
+    await sleep(300);
+    const host = page.locator('#reels-blocker-settings');
+    await host.locator('.fab').click();
+    await host.locator('input[data-key=hideStories] + .track').click();
+    await host.locator('.done').click();
+    await sleep(300);
+    check('Demo: settings apply without a reload', !(await page.locator('#stories').isVisible()) && await page.locator('#demo-path').inputValue() === '/', 'stories still visible');
     check('Demo: no page errors', errors.length === 0, errors.join('; '));
     await ctx.close();
   }

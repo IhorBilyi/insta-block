@@ -424,6 +424,15 @@
     cancelPending: cancelPending,
     applyDue: applyDue,
     reload: function () { env.reload(); },
+    // Re-applies the current settings without a page load (used by the demo).
+    refresh: function () {
+      lastPath = null;
+      document.querySelectorAll('[' + HIDDEN_ATTR + ']').forEach(function (n) { n.removeAttribute(HIDDEN_ATTR); });
+      setFlag('data-reels-blocker-explore', config.hideExplore);
+      setFlag('data-reels-blocker-banners', config.hideAppBanners);
+      checkRoute();
+      cleanPage();
+    },
     checkRoute: checkRoute,
     cleanPage: cleanPage
   };
