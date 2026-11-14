@@ -1,0 +1,39 @@
+/*
+ * Reels blocker: entry points.
+ * Only stable attributes are targeted (href patterns, aria-label, role),
+ * never Instagram's obfuscated class names.
+ */
+
+/* Reels tab in the bottom bar (mobile) and the side nav (desktop). */
+a[href="/reels/"],
+a[href^="/reels/"],
+a[href^="https://www.instagram.com/reels/"],
+a:has(svg[aria-label="Reels"]),
+[role="link"]:has(svg[aria-label="Reels"]) {
+  display: none !important;
+}
+
+/* The "Reels" tab on profile pages (/<user>/reels/). */
+a[href$="/reels/"][role="tab"],
+a[role="tab"][href*="/reels/"] {
+  display: none !important;
+}
+
+/* Items marked by blocker.js (feed posts, suggestion rows). */
+[data-reels-blocker-hidden] {
+  display: none !important;
+}
+
+/* Optional: Explore. Enabled when blocker.js sets this flag on <html>. */
+html[data-reels-blocker-explore] a[href="/explore/"],
+html[data-reels-blocker-explore] a:has(svg[aria-label="Explore"]),
+html[data-reels-blocker-explore] a:has(svg[aria-label="Search & Explore"]) {
+  display: none !important;
+}
+
+/* Optional: "Get the app" links and banners (Stage 4). */
+html[data-reels-blocker-banners] a[href*="apps.apple.com"],
+html[data-reels-blocker-banners] a[href*="itunes.apple.com"],
+html[data-reels-blocker-banners] a[href*="play.google.com"] {
+  display: none !important;
+}
