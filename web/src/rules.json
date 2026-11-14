@@ -1,0 +1,27 @@
+{
+  "_comment": "Text labels and selectors the blocker matches. When Instagram changes its markup, this file and blocker.css are usually the only things to edit. Add translations of the labels here if Instagram is not in English.",
+  "suggestedLabels": [
+    "Suggested for you",
+    "Suggested posts",
+    "Suggested reels",
+    "Suggested threads"
+  ],
+  "reelPostSelectors": [
+    "a[href*=\"/reel/\"]",
+    "a[href*=\"/reels/\"]",
+    "svg[aria-label=\"Reels\"]",
+    "svg[aria-label=\"Reel\"]",
+    "svg[aria-label=\"Clip\"]"
+  ],
+  "appBannerLabels": [
+    "Open app",
+    "Open in app",
+    "Use the app",
+    "Use app",
+    "Open Instagram",
+    "Get the app"
+  ],
+  "storyLinkSelectors": [
+    "a[href^=\"/stories/\"]:not([href^=\"/stories/highlights/\"])"
+  ]
+}

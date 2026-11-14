@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mock Instagram</title>
+<!--DEMO_HEAD-->
+<style>
+  :root { --bg: #fff; --fg: #111; --muted: #737373; --line: #dbdbdb; --card: #fafafa; --accent: #0095f6; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #000; --fg: #f5f5f5; --muted: #a8a8a8; --line: #262626; --card: #121212; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #000; --fg: #f5f5f5; --muted: #a8a8a8; --line: #262626; --card: #121212; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding-bottom: 120px; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 470px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .demo-bar { background: var(--card); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); font-size: 13px; }
+  .demo-bar button.back { background: var(--line); color: var(--fg); }
+  .demo-bar form { display: flex; gap: 6px; margin-top: 6px; }
+  .demo-bar input { flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font: inherit; }
+  .demo-bar button { padding: 6px 10px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; }
+  .demo-bar ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+  header .logo { font-size: 22px; font-weight: 600; font-style: italic; }
+  .stories { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 12px; border-bottom: 1px solid var(--line); }
+  .stories a { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
+  .ring { width: 56px; height: 56px; border-radius: 50%; background: conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34); padding: 3px; }
+  .ring span { display: block; width: 100%; height: 100%; border-radius: 50%; background: var(--line); border: 2px solid var(--bg); }
+  article, .card { border-bottom: 1px solid var(--line); padding: 12px 0; }
+  .who { font-weight: 600; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+  .tag { font-size: 11px; font-weight: 500; color: var(--muted); }
+  .media { height: 220px; border-radius: 8px; background: var(--card); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--muted); }
+  .people { display: flex; gap: 10px; }
+  .people > div { flex: 1; padding: 12px; border: 1px solid var(--line); border-radius: 8px; text-align: center; }
+  .people button, .reel-view button { margin-top: 8px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; padding: 5px 10px; font: inherit; }
+  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 0 calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+  nav.tabs a { display: flex; flex-direction: column; align-items: center; font-size: 11px; gap: 2px; }
+  nav.tabs svg { width: 22px; height: 22px; }
+  .app-banner { position: fixed; left: 0; right: 0; bottom: 62px; background: var(--accent); color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; z-index: 11; }
+  .app-banner a { background: #fff; color: var(--accent); padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .reel-view { height: 60vh; margin-top: 12px; border-radius: 10px; background: #111; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+  .thread .bubble { display: inline-block; padding: 8px 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); margin: 6px 0; }
+  .profile-tabs { display: flex; border-top: 1px solid var(--line); margin-top: 12px; }
+  .profile-tabs a { flex: 1; text-align: center; padding: 10px 0; font-weight: 600; font-size: 12px; letter-spacing: .05em; }
+  .page-title { font-size: 18px; font-weight: 600; margin: 16px 0 8px; }
+</style>
+</head>
+<body>
+<!--DEMO_BAR-->
+<div class="wrap"><main id="app"></main></div>
+<div class="app-banner" id="app-banner"><span>Instagram is better in the app</span><a href="https://apps.apple.com/app/instagram/id389801252" id="banner-link">Use the app</a></div>
+<nav class="tabs">
+  <a href="/" id="nav-home"><svg aria-label="Home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10H3z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Home</a>
+  <a href="/explore/" id="nav-explore"><svg aria-label="Explore" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" stroke="currentColor" stroke-width="2"/></svg>Search</a>
+  <a href="/reels/" id="nav-reels"><svg aria-label="Reels" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Reels</a>
+  <a href="/direct/inbox/" id="nav-dm"><svg aria-label="Direct" viewBox="0 0 24 24"><path d="M3 4l18 8-18 8 3-8z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Messages</a>
+  <a href="/friend/" id="nav-profile"><svg aria-label="Profile" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-5 15-5 16 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>Profile</a>
+</nav>
+<script>
+// A tiny single-page router that behaves like Instagram's: links use pushState.
+// In the demo build (window.__DEMO__), the path is kept in memory instead of the URL,
+// so the demo works inside any host page.
+(function () {
+  const DEMO = !!window.__DEMO__;
+  const app = document.getElementById('app');
+  const path = () => DEMO ? window.__demoPath : location.pathname;
+  const backStack = [];
+
+  const post = (id, who, body, extra = '') =>
+    `<div><article id="${id}"><div class="who">${who}${extra}</div>${body}</article></div>`;
+
+  function render() {
+    const p = path();
+    const addr = document.getElementById('demo-path');
+    if (addr) addr.value = p;
+    if (p === '/') {
+      app.innerHTML = `
+        <header><span class="logo">Instagram</span></header>
+        <div class="stories" id="stories">
+          <a href="/stories/anna/1/"><div class="ring"><span></span></div>anna</a>
+          <a href="/stories/ben/2/"><div class="ring"><span></span></div>ben</a>
+          <a href="/stories/cleo/3/"><div class="ring"><span></span></div>cleo</a>
+        </div>
+        <div id="feed">
+          ${post('post-normal', 'anna', '<a href="/p/111/"><div class="media">Photo from a friend</div></a>')}
+          ${post('post-reel', 'ben <span class="tag">Reel</span>', '<a href="/reel/R1/"><div class="media">A reel in your feed</div></a>')}
+          ${post('post-suggested', 'stranger', '<div><span>Suggested for you</span></div><a href="/p/222/"><div class="media">A post you didn\'t ask for</div></a>')}
+          <div id="carousel"><div class="card"><div class="who"><span>Suggested for you</span></div>
+            <div class="people"><div><a href="/someone/">someone</a><br><button>Follow</button></div><div><a href="/other/">other</a><br><button>Follow</button></div></div></div></div>
+        </div>`;
+      setTimeout(() => {
+        const feed = document.getElementById('feed');
+        if (!feed) return;
+        feed.insertAdjacentHTML('beforeend',
+          post('late-normal', 'cleo', '<a href="/p/333/"><div class="media">Another friend\'s photo (loaded later)</div></a>') +
+          post('late-reel', 'dan <svg aria-label="Reels" width="12" height="12"></svg>', '<a href="/p/444/"><div class="media">A reel that loaded later</div></a>'));
+      }, 300);
+    } else if (p === '/direct/inbox/') {
+      app.innerHTML = `<div class="page-title">Messages</div><a href="/direct/t/1/" id="dm-thread" class="card" style="display:block">anna: look at this 😂</a>`;
+    } else if (p.startsWith('/direct/t/')) {
+      app.innerHTML = `<div class="page-title">anna</div><div class="thread"><div class="bubble">look at this 😂</div><br>
+        <a href="/reel/AAA/" id="dm-reel" class="bubble">▶ Reel from anna</a></div>`;
+    } else if (p.startsWith('/reel/')) {
+      app.innerHTML = `<div class="reel-view" id="reel-view">Playing reel ${p.split('/')[2]}<br>
+        <button id="next-reel">Swipe to the next reel</button></div>`;
+      document.getElementById('next-reel').onclick = () => go('/reel/BBB/');
+    } else if (p === '/friend/' || p === '/someone/') {
+      app.innerHTML = `<div class="page-title">${p.slice(1, -1)}</div><div class="profile-tabs" id="profile">
+        <a role="tab" href="${p}">POSTS</a><a role="tab" id="profile-reels-tab" href="${p}reels/">REELS</a></div>`;
+    } else if (p.startsWith('/reels/')) {
+      app.innerHTML = `<div class="reel-view" id="reels-feed">The endless Reels feed. You shouldn't be seeing this.</div>`;
+    } else if (p.startsWith('/explore/')) {
+      app.innerHTML = `<div class="page-title" id="explore-page">Explore</div>`;
+    } else if (p.startsWith('/stories/')) {
+      app.innerHTML = `<div class="reel-view" id="story-view">Story ${p}</div>`;
+    } else {
+      app.innerHTML = `<div class="page-title" id="page">${p}</div>`;
+    }
+  }
+
+  function go(p) {
+    if (DEMO) {
+      backStack.push(window.__demoPath);
+      window.__demoPath = p;
+      render();
+      if (window.__reelsBlocker) window.__reelsBlocker.checkRoute();
+      return;
+    }
+    history.pushState({}, '', p);
+    render();
+  }
+
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a || /^https?:/.test(a.getAttribute('href'))) return;
+    e.preventDefault();
+    go(a.getAttribute('href'));
+  });
+  window.addEventListener('popstate', render);
+  const form = document.getElementById('demo-go');
+  if (form) form.addEventListener('submit', e => {
+    e.preventDefault();
+    let p = document.getElementById('demo-path').value.trim() || '/';
+    if (!p.startsWith('/')) p = '/' + p;
+    go(p);
+  });
+  const back = document.getElementById('demo-back');
+  if (back) back.addEventListener('click', () => {
+    if (!backStack.length) return;
+    window.__demoPath = backStack.pop();
+    render();
+    window.__reelsBlocker.checkRoute();
+  });
+  window.go = go;
+  window.__mockRender = render;
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "suggestedLabels": [
+    "Suggested for you",
+    "Suggested posts",
+    "Suggested reels",
+    "Suggested threads"
+  ],
+  "reelPostSelectors": [
+    "a[href*=\"/reel/\"]",
+    "a[href*=\"/reels/\"]",
+    "svg[aria-label=\"Reels\"]",
+    "svg[aria-label=\"Reel\"]",
+    "svg[aria-label=\"Clip\"]"
+  ],
+  "appBannerLabels": [
+    "Open app",
+    "Open in app",
+    "Use the app",
+    "Use app",
+    "Open Instagram",
+    "Get the app"
+  ],
+  "storyLinkSelectors": [
+    "a[href^=\"/stories/\"]:not([href^=\"/stories/highlights/\"])"
+  ]
+}
